@@ -2,55 +2,137 @@ from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
 
-# Window size
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
 
-# Line endpoints (you can change these)
-x1, y1 = 100, 100
-x2, y2 = 700, 400
 
-def midpoint_line(x1, y1, x2, y2):
-    # Calculate dx and dy
+
+def find_zone(x1, y1, x2, y2):
     dx = x2 - x1
     dy = y2 - y1
 
-    # Initialize starting point
-    x = x1
-    y = y1
-
-    # Decision parameter
-    p = 2 * dy - dx
-
-    # Start drawing pixels
-    glBegin(GL_POINTS)
-    glVertex2f(x, y)
-
-    for k in range(dx):
-        if p < 0:
-            # Next pixel is (x+1, y)
-            x = x + 1
-            p = p + 2 * dy
+    if abs(dx) > abs(dy):  
+        if dx >= 0 and dy >= 0:
+            return 0
+        elif dx < 0 and dy >= 0:
+            return 3
+        elif dx < 0 and dy < 0:
+            return 4
         else:
-            # Next pixel is (x+1, y+1)
-            x = x + 1
-            y = y + 1
-            p = p + 2 * dy - 2 * dx
+            return 7
+    else: 
+        if dx >= 0 and dy >= 0:
+            return 1
+        elif dx < 0 and dy >= 0:
+            return 2
+        elif dx < 0 and dy < 0:
+            return 5
+        else:
+            return 6
 
-        # Plot next pixel
+
+def convert_to_zone0(x, y, zone):
+    if zone == 0:
+        return x, y
+    elif zone == 1:
+        return y, x
+    elif zone == 2:
+        return y, -x
+    elif zone == 3:
+        return -x, y
+    elif zone == 4:
+        return -x, -y
+    elif zone == 5:
+        return -y, -x
+    elif zone == 6:
+        return -y, x
+    elif zone == 7:
+        return x, -y
+
+
+
+def convert_from_zone0(x, y, zone):
+    if zone == 0:
+        return x, y
+    elif zone == 1:
+        return y, x
+    elif zone == 2:
+        return -y, x
+    elif zone == 3:
+        return -x, y
+    elif zone == 4:
+        return -x, -y
+    elif zone == 5:
+        return -y, -x
+    elif zone == 6:
+        return y, -x
+    elif zone == 7:
+        return x, -y
+
+
+
+def midPoint_zone0(x1, y1, x2, y2):
+    points = []
+    dx = x2 - x1
+    dy = y2 - y1
+    d = 2 * dy - dx
+    incE = 2 * dy
+    incNE = 2 * (dy - dx)
+    x, y = x1, y1
+
+    while x <= x2:
+        points.append((x, y))
+        if d <= 0:
+            d += incE
+        else:
+            d += incNE
+            y += 1
+        x += 1
+    return points
+
+
+
+def draw_line(x1, y1, x2, y2):
+    zone = find_zone(x1, y1, x2, y2)
+
+    X1, Y1 = convert_to_zone0(x1, y1, zone)
+    X2, Y2 = convert_to_zone0(x2, y2, zone)
+
+    points_zone0 = midPoint_zone0(X1, Y1, X2, Y2)
+    points_final = [convert_from_zone0(x, y, zone) for (x, y) in points_zone0]
+
+    glBegin(GL_POINTS)
+    for (x, y) in points_final:
         glVertex2f(x, y)
-
     glEnd()
+
 
 
 def display():
     glClear(GL_COLOR_BUFFER_BIT)
-    glColor3f(1.0, 1.0, 0.0)  # Yellow
-    glPointSize(3.0)
+    glColor3f(1.0, 1.0, 0.0)
+    glPointSize(2.5)
 
-    midpoint_line(x1, y1, x2, y2)
+   
+    draw_line(100, 100, 200, 100)
+    draw_line(200, 100, 200, 200)
+    draw_line(200, 200, 100, 200)
+    draw_line(100, 200, 100, 100)
+
+
+    draw_line(150, 150, 250, 150)
+    draw_line(250, 150, 250, 250)
+    draw_line(250, 250, 150, 250)
+    draw_line(150, 250, 150, 150)
+
+    
+    draw_line(100, 100, 150, 150)
+    draw_line(200, 100, 250, 150)
+    draw_line(200, 200, 250, 250)
+    draw_line(100, 200, 150, 250)
 
     glutSwapBuffers()
+
 
 
 def reshape(width, height):
@@ -62,15 +144,17 @@ def reshape(width, height):
     glLoadIdentity()
 
 
+
 def init_glut_window():
     glutInit()
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA)
     glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT)
     glutInitWindowPosition(200, 100)
-    glutCreateWindow(b"Midpoint Line Drawing Algorithm - OpenGL")
+    glutCreateWindow(b"Midpoint Line with Zone Logic - Straight Hollow Cube")
     glutDisplayFunc(display)
     glutReshapeFunc(reshape)
     glClearColor(0.0, 0.0, 0.0, 1.0)
+
 
 
 def main():
