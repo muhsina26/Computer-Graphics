@@ -6,16 +6,13 @@ WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
 
 
-
 def midPointCircle(xc, yc, r):
     points = []
-
     x = 0
     y = r
-    d = 1 - r  
+    d = 1 - r
 
     while x <= y:
-      
         points.extend([
             (xc + x, yc + y),
             (xc - x, yc + y),
@@ -27,13 +24,11 @@ def midPointCircle(xc, yc, r):
             (xc - y, yc - x)
         ])
 
-       
         if d < 0:
             d += 2 * x + 3
         else:
             d += 2 * (x - y) + 5
             y -= 1
-
         x += 1
 
     return points
@@ -42,24 +37,39 @@ def midPointCircle(xc, yc, r):
 def draw_circle(xc, yc, r):
     points = midPointCircle(xc, yc, r)
     glBegin(GL_POINTS)
-    for  (x, y) in points:
+    for (x, y) in points:
         glVertex2f(x, y)
     glEnd()
 
 
-
 def display():
     glClear(GL_COLOR_BUFFER_BIT)
-    glColor3f(1.0, 1.0, 0.0)  
-    glPointSize(2.5)
+    glColor3f(1.0, 1.0, 0.0)
+    glPointSize(2.0)
+
+    # Center of the whole figure
+    xc, yc = 300, 300 #choto circle
+    r = 50  
+
+  
+
+    
+    draw_circle(xc + r, yc, r)   # Right
+    draw_circle(xc - r, yc, r)   # Left
+    draw_circle(xc, yc + r, r)   # Top
+    draw_circle(xc, yc - r, r)   # Bottom
+    # draw_circle(xc + r // 2, yc + (r * 87) // 100, r)  # Top-right (approx √3/2)
+    # draw_circle(xc - r // 2, yc + (r * 87) // 100, r)  # Top-left
+    # draw_circle(xc + r // 2, yc - (r * 87) // 100, r)  # Bottom-right
+    # draw_circle(xc - r // 2, yc - (r * 87) // 100, r)  # Bottom-left
+
+    # ---- Outer Boundary ----
+    draw_circle(xc, yc, 2 * r) 
 
    
-    draw_circle(300, 300, 100)
-
     glutSwapBuffers()
 
 
-# ---- RESHAPE FUNCTION ----
 def reshape(width, height):
     glViewport(0, 0, width, height)
     glMatrixMode(GL_PROJECTION)
@@ -69,19 +79,17 @@ def reshape(width, height):
     glLoadIdentity()
 
 
-# ---- GLUT WINDOW INITIALIZATION ----
 def init_glut_window():
     glutInit()
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA)
     glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT)
     glutInitWindowPosition(200, 100)
-    glutCreateWindow(b"Midpoint Circle Algorithm - Single Circle")
+    glutCreateWindow(b"Flower of Circles - Midpoint Circle Algorithm (No Math Functions)")
     glutDisplayFunc(display)
     glutReshapeFunc(reshape)
     glClearColor(0.0, 0.0, 0.0, 1.0)
 
 
-# ---- MAIN FUNCTION ----
 def main():
     init_glut_window()
     glutMainLoop()

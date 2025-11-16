@@ -30,24 +30,14 @@ def draw_circle(xc, yc, r):
         glVertex2f(x, y)
     glEnd()
 
-def draw_line(x1, y1, x2, y2):
-    glBegin(GL_LINES)
-    glVertex2f(x1, y1)
-    glVertex2f(x2, y2)
-    glEnd()
-
 def display():
     glClear(GL_COLOR_BUFFER_BIT)
     glPointSize(2)
     glColor3f(1, 1, 0)
 
-    #top and bottom
-    draw_circle(400, 400, 80)
-    draw_circle(400, 300, 80)
-
-    # Connect edges (sides)
-    draw_line(480, 400, 480, 300)
-    draw_line(320, 400, 320, 300)
+    centers = [(200, 300), (280, 300), (360, 300), (240, 250), (320, 250)]
+    for (x, y) in centers:
+        draw_circle(x, y, 50)
 
     glutSwapBuffers()
 
@@ -63,7 +53,7 @@ def main():
     glutInit()
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA)
     glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT)
-    glutCreateWindow(b"Cylinder (3D Illusion) - Midpoint Circle Algorithm")
+    glutCreateWindow(b"Multiple Circles - Midpoint Algorithm")
     glutDisplayFunc(display)
     glutReshapeFunc(reshape)
     glClearColor(0, 0, 0, 1)

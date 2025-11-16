@@ -39,7 +39,7 @@ def display():
     for r in range(20, 101, 20):
         draw_circle(400, 300, r)
 
-    # Vertical rings (flattened for 3D look)
+    # Vertical rings 
     for r in range(20, 101, 20):
         glBegin(GL_POINTS)
         for (x, y) in midPointCircle(400, 300, r):
