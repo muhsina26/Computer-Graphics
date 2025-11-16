@@ -5,46 +5,44 @@ from OpenGL.GLU import *
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
 
+def midPointCircle(xc,yc,r):
+    points=[]
 
+    x=0
+    y=r
+    d=1-r
 
-def midPointCircle(xc, yc, r):
-    points = []
+    while x<=y:
 
-    x = 0
-    y = r
-    d = 1 - r  
-
-    while x <= y:
-      
         points.extend([
-            (xc + x, yc + y),
-            (xc - x, yc + y),
-            (xc + x, yc - y),
-            (xc - x, yc - y),
-            (xc + y, yc + x),
-            (xc - y, yc + x),
-            (xc + y, yc - x),
-            (xc - y, yc - x)
+            (xc+x,yc+y),
+            (xc-x,yc+y),
+            (xc-x,yc-y),
+            (xc+x,yc-y),
+
+            (xc+y,yc+x),
+            (xc-y,yc+x),
+            (xc+y,yc-x),
+            (xc-y,yc-x)
         ])
-
-       
-        if d < 0:
-            d += 2 * x + 3
+        if d<0:
+            d+=2*x+3
         else:
-            d += 2 * (x - y) + 5
-            y -= 1
-
-        x += 1
-
+            d+=2*(x-y)+5
+            y-=1
+        x+=1
     return points
 
 
-def draw_circle(xc, yc, r):
-    points = midPointCircle(xc, yc, r)
+
+
+
+def draw_circle(xc,yc,r):
+    points=midPointCircle(xc,yc,r)
     glBegin(GL_POINTS)
-    for  (x, y) in points:
-        glVertex2f(x, y)
-    glEnd()
+    for  (x,y) in points:
+        glVertex2f(x,y)
+    glEnd() 
 
 
 
@@ -52,14 +50,10 @@ def display():
     glClear(GL_COLOR_BUFFER_BIT)
     glColor3f(1.0, 1.0, 0.0)  
     glPointSize(2.5)
-
-
-    for r in range(20,121,20):
-         draw_circle(400, 300, r)
-        
+    draw_circle(300, 300, 100)
 
    
-   
+    
 
     glutSwapBuffers()
 
